@@ -72,4 +72,5 @@ fun ScreenIntroduction(navController: NavController){
 @Preview(showBackground = true)
 @Composable
 fun ScreenIntroductionPreview(){
+
 }
