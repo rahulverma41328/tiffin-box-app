@@ -1,6 +1,7 @@
 package com.example.tifinbox.auth.viewModel
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,11 +13,16 @@ import com.example.tifinbox.helper.validateAddress
 import com.example.tifinbox.helper.validateName
 import com.example.tifinbox.helper.validatePassword
 import com.example.tifinbox.helper.validatePhone
+import com.example.tifinbox.model.LoginResponse
+import com.example.tifinbox.model.LoginUserModel
 import com.example.tifinbox.model.OtpRequest
 import com.example.tifinbox.model.User
 import com.example.tifinbox.util.Resource
+import com.google.gson.Gson
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -31,10 +37,15 @@ class RegisterViewModel:ViewModel() {
     private val _validation = Channel<RegisterFieldState>()
     val validation = _validation.receiveAsFlow()
 
+    private val _checkOtp = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
+    val checkOtp = _checkOtp
+
+    private val _login = MutableStateFlow<Resource<LoginResponse>>(Resource.Unspecified())
+    val login = _login
+
     fun registerUser(name:String, phone:String, password:String,address:String){
 
-        val user = User(name,phone,password)
-
+        val user = User(name,phone,password, address)
         if(checkValidation(name,phone,password,address)){
             viewModelScope.launch {
                 _register.value = Resource.Loading()
@@ -64,6 +75,7 @@ class RegisterViewModel:ViewModel() {
     }
 
     private fun checkValidation(name: String, phone: String, password: String, address: String): Boolean {
+        Log.e("validation","started")
         val phoneValidation = validatePhone(phone)
         val nameValidation = validateName(name)
         val addressValidation = validateAddress(address)
@@ -74,22 +86,46 @@ class RegisterViewModel:ViewModel() {
                 && addressValidation is RegisterValidation.Success
                 && passwordValidation is RegisterValidation.Success
 
+        Log.e("validation",shouldRegister.toString())
         return shouldRegister
     }
 
     fun verifyOTP(otp:String){
-        Log.e("otp",otp)
         viewModelScope.launch {
-            val response = authApi.verifyOTP(OtpRequest(otp = otp))
-            try {
-                if (response.isSuccessful){
-                    Log.e("response verify",response.toString() )
-                }else{
-                    Log.e("response verify",response.toString() )
+            if(otp.isNotEmpty()) {
+                val response = authApi.verifyOTP(OtpRequest(otp = otp))
+                try {
+                    if (response.isSuccessful) {
+                        _checkOtp.value = Resource.Success(true)
+                    } else {
+                        _checkOtp.value = Resource.Error(response.message().toString())
+                    }
+                } catch (e: Exception) {
+                    _checkOtp.value = Resource.Error(e.message.toString())
                 }
-            }catch (e: Exception){
-                Log.e("response verify",e.message.toString() )
             }
         }
     }
+
+    fun loginUser(phone: String, password:String){
+        _login.value = Resource.Loading()
+        viewModelScope.launch {
+            if (phone.isNotEmpty() && password.isNotEmpty()){
+                val response = authApi.loginUser(LoginUserModel(phone, password))
+                try {
+                    if (response.isSuccessful){
+                        response.body()?.let {
+                            val user: LoginResponse = response.body()!!
+                            _login.value = Resource.Success(user)
+                        }
+                    }else{
+                        _login.value = Resource.Error(response.message())
+                    }
+                }catch (e: Exception){
+                    _login.value = Resource.Error(response.message())
+                }
+            }
+        }
+    }
+
 }

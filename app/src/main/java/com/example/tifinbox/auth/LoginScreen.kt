@@ -1,5 +1,6 @@
 package com.example.tiffinbox.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -36,52 +39,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.tifinbox.R
+import com.example.tifinbox.auth.viewModel.RegisterViewModel
+import com.example.tifinbox.helper.RegisterValidation
+import com.example.tifinbox.helper.ShowProgressBar
 import com.example.tifinbox.routes.AuthRoutes
 import com.example.tifinbox.ui.theme.appGreen
+import com.example.tifinbox.util.Resource
 
 @Composable
-fun ScreenLogin(navController: NavController){
+fun ScreenLogin(navController: NavController,registerViewModel: RegisterViewModel,onNavigate:() -> Unit){
 
     Scaffold(modifier = Modifier) { padding ->
         Column(Modifier.padding(20.dp).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally ) {
             LoginTopLayout()
-            LoginMiddleLayout(navController)
+            LoginMiddleLayout(navController,registerViewModel,onNavigate)
         }
     }
 
 }
 
 @Composable
-fun LoginMiddleLayout(navController: NavController) {
+fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterViewModel,onNavigate:() -> Unit) {
 
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    OutlinedTextField(
-        value = password,
-        onValueChange = {password = it},
-        placeholder = { Text("password",color = Color.Gray) },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Lock,
-                contentDescription = null,
-                tint = Color.Gray
-            )
-        },
-        shape = RoundedCornerShape(16.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color.LightGray,
-            unfocusedBorderColor = Color.LightGray,
-            focusedLabelColor = Color.Gray,
-            unfocusedLabelColor = Color.Gray,
-            cursorColor = Color.Black
-        ),
-        modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
-    )
+    val loginState by registerViewModel.login.collectAsState()
+    var isLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     OutlinedTextField(
         value = phone,
         onValueChange = {phone = it},
-        placeholder = { Text("phone", color = Color.Gray) },
+        placeholder = { Text("phone",color = Color.Gray) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Outlined.Phone,
@@ -99,9 +88,30 @@ fun LoginMiddleLayout(navController: NavController) {
         ),
         modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
     )
+    OutlinedTextField(
+        value = password,
+        onValueChange = {password = it},
+        placeholder = { Text("password", color = Color.Gray) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Lock,
+                contentDescription = null,
+                tint = Color.Gray
+            )
+        },
+        shape = RoundedCornerShape(16.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.LightGray,
+            unfocusedBorderColor = Color.LightGray,
+            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.Gray,
+            cursorColor = Color.Black
+        ),
+        modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+    )
 
     Button(onClick = {
-
+        registerViewModel.loginUser("+91$phone",password)
     },
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
@@ -124,6 +134,25 @@ fun LoginMiddleLayout(navController: NavController) {
         modifier = Modifier.clickable {
             navController.navigate(AuthRoutes.registerScreen)
         })
+
+    ShowProgressBar(isLoading)
+
+    when(loginState){
+        is Resource.Error -> {
+            isLoading = false
+
+            Toast.makeText(context,"check your phone no. and password",Toast.LENGTH_SHORT).show()
+        }
+        is Resource.Loading -> {
+            isLoading = true
+        }
+        is Resource.Success -> {
+            isLoading = false
+            onNavigate()
+            Toast.makeText(context,"Successfully loggedIn",Toast.LENGTH_SHORT).show()
+        }
+        is Resource.Unspecified -> {}
+    }
 }
 
 @Composable

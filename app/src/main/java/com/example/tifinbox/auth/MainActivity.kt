@@ -5,10 +5,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -42,16 +44,19 @@ class MainActivity : ComponentActivity() {
                             RegisterScreen(navController,registerViewModel)
                         }
                         composable(AuthRoutes.loginScreen) {
-                            ScreenLogin(navController)
-                        }
-                        composable(AuthRoutes.locationScreen) {
-                            ScreenVerifyOtp(navController, registerViewModel){
+                            ScreenLogin(navController,registerViewModel, onNavigate = {
                                 val intent = Intent(this@MainActivity, DashboardActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 startActivity(intent)
-                            }
+                            })
                         }
-
+                        composable(AuthRoutes.locationScreen) {
+                            ScreenVerifyOtp(navController, registerViewModel, onNavigate = {
+                                val intent = Intent(this@MainActivity, DashboardActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                            })
+                        }
                     })
                 }
             }

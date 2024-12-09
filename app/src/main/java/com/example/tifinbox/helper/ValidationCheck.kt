@@ -3,8 +3,9 @@ package com.example.tifinbox.helper
 import android.util.Patterns
 
 fun validatePhone(phone:String): RegisterValidation {
-    if (phone.length<10)
+    if (phone.length<10){
         return RegisterValidation.Failed("no. should be of 10 numbers")
+    }
     return RegisterValidation.Success
 }
 

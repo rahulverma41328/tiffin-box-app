@@ -1,6 +1,8 @@
 package com.example.tifinbox.api
 
 
+import com.example.tifinbox.model.LoginResponse
+import com.example.tifinbox.model.LoginUserModel
 import com.example.tifinbox.model.OtpRequest
 import com.example.tifinbox.model.User
 import retrofit2.Response
@@ -15,5 +17,6 @@ interface AuthApi {
     @POST("/api/auth/verify")
     suspend fun verifyOTP(@Body otp:OtpRequest): Response<User>
 
-
+    @POST("/api/auth/login")
+    suspend fun loginUser(@Body credential:LoginUserModel):Response<LoginResponse>
 }
