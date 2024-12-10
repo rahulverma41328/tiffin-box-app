@@ -1,7 +1,6 @@
 package com.example.tifinbox.auth.viewModel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,11 +17,8 @@ import com.example.tifinbox.model.LoginUserModel
 import com.example.tifinbox.model.OtpRequest
 import com.example.tifinbox.model.User
 import com.example.tifinbox.util.Resource
-import com.google.gson.Gson
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -116,6 +112,7 @@ class RegisterViewModel:ViewModel() {
                     if (response.isSuccessful){
                         response.body()?.let {
                             val user: LoginResponse = response.body()!!
+
                             _login.value = Resource.Success(user)
                         }
                     }else{

@@ -35,7 +35,11 @@ class MainActivity : ComponentActivity() {
                     val registerViewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
                     NavHost(navController = navController, startDestination = AuthRoutes.splashScreen, builder = {
                         composable(AuthRoutes.splashScreen,){
-                            ScreenSplash(navController = navController)
+                            ScreenSplash(navController = navController, onNavigate = {
+                                val intent = Intent(this@MainActivity, DashboardActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                            })
                         }
                         composable(AuthRoutes.introductionScreen,){
                             ScreenIntroduction(navController)

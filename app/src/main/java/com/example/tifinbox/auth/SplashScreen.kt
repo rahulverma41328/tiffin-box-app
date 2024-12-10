@@ -1,5 +1,7 @@
 package com.example.tiffinbox.auth
 
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +17,7 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
@@ -24,14 +27,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.tifinbox.R
+import com.example.tifinbox.dashboard.DashboardActivity
+import com.example.tifinbox.helper.StoreUserData
 import com.example.tifinbox.routes.AuthRoutes
 import kotlinx.coroutines.delay
 
 @Composable
-fun ScreenSplash(navController: NavController){
+fun ScreenSplash(navController: NavController,onNavigate:() -> Unit){
+
+    val context = LocalContext.current
+    val userData = StoreUserData(context)
 
     LaunchedEffect(key1 = true) {
         delay(2000)
+        userData.userLogin.collect{isLogin ->
+            if (isLogin){
+                onNavigate()
+            }
+        }
         navController.navigate(AuthRoutes.introductionScreen)
     }
     Scaffold(modifier = Modifier) { innerPadding ->

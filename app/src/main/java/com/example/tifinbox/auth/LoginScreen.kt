@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,9 +43,11 @@ import com.example.tifinbox.R
 import com.example.tifinbox.auth.viewModel.RegisterViewModel
 import com.example.tifinbox.helper.RegisterValidation
 import com.example.tifinbox.helper.ShowProgressBar
+import com.example.tifinbox.helper.StoreUserData
 import com.example.tifinbox.routes.AuthRoutes
 import com.example.tifinbox.ui.theme.appGreen
 import com.example.tifinbox.util.Resource
+import kotlin.math.log
 
 @Composable
 fun ScreenLogin(navController: NavController,registerViewModel: RegisterViewModel,onNavigate:() -> Unit){
@@ -148,6 +151,13 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
         }
         is Resource.Success -> {
             isLoading = false
+            val storeData = StoreUserData(context)
+            val userData = loginState.data
+            if (userData != null) {
+               LaunchedEffect(Unit) {
+                   storeData.saveUserData(userData.user.name,userData.user.phone,userData.user.address,true)
+               }
+            }
             onNavigate()
             Toast.makeText(context,"Successfully loggedIn",Toast.LENGTH_SHORT).show()
         }
