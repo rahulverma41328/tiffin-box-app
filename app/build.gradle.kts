@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -81,4 +82,9 @@ dependencies {
     // data store
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.datastore:datastore:1.1.1")
+
+    // Extended Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+
+    // room database
 }

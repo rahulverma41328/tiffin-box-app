@@ -16,6 +16,7 @@ import com.example.tifinbox.model.LoginResponse
 import com.example.tifinbox.model.LoginUserModel
 import com.example.tifinbox.model.OtpRequest
 import com.example.tifinbox.model.User
+
 import com.example.tifinbox.util.Resource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,7 @@ import java.lang.Exception
 class RegisterViewModel:ViewModel() {
 
     private val authApi = RetrofitInstance.authApi
+
     private val _register = MutableLiveData<Resource<User>>()
     val register : LiveData<Resource<User>> = _register
 
@@ -111,7 +113,7 @@ class RegisterViewModel:ViewModel() {
                 try {
                     if (response.isSuccessful){
                         response.body()?.let {
-                            val user: LoginResponse = response.body()!!
+                            val user: UserData = response.body()!!
 
                             _login.value = Resource.Success(user)
                         }

@@ -1,6 +1,6 @@
 package com.example.tifinbox.model
 
-data class KitchenModel(
+data class AllServiceProviderModel(
     val success: String,
     val sp: ServiceProviderModel
 )

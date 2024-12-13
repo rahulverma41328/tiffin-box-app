@@ -1,5 +1,6 @@
 package com.example.tiffinbox.auth
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -70,6 +71,8 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
     val loginState by registerViewModel.login.collectAsState()
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+
     OutlinedTextField(
         value = phone,
         onValueChange = {phone = it},
@@ -152,10 +155,16 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
         is Resource.Success -> {
             isLoading = false
             val storeData = StoreUserData(context)
+            LaunchedEffect(Unit) {
+                if (storeData.hasData()){
+                    storeData.clearData()
+                }
+            }
             val userData = loginState.data
             if (userData != null) {
                LaunchedEffect(Unit) {
-                   storeData.saveUserData(userData.user.name,userData.user.phone,userData.user.address,true)
+                //  userDao.insertUser(userData)
+               //    Log.e("stored",userDao.getUserById(2).toString())
                }
             }
             onNavigate()

@@ -44,6 +44,7 @@ fun ScreenSplash(navController: NavController,onNavigate:() -> Unit){
             if (isLogin){
                 onNavigate()
             }
+            else navController.navigate(AuthRoutes.introductionScreen)
         }
         navController.navigate(AuthRoutes.introductionScreen)
     }

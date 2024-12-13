@@ -14,4 +14,5 @@ object RetrofitInstance {
     }
 
     val authApi: AuthApi = getInstance().create(AuthApi::class.java)
+    val serviceProviderApi: ServiceProvider = getInstance().create(ServiceProvider::class.java)
 }

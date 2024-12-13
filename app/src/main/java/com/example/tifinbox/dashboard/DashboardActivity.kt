@@ -20,14 +20,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.tifinbox.R
 import com.example.tifinbox.dashboard.bottomnav.BottomBar
-import com.example.tifinbox.dashboard.bottomnav.BottomNav
 import com.example.tifinbox.dashboard.bottomnav.BottomNavGraph
 import com.example.tifinbox.dashboard.screen.ScreenHome
+import com.example.tifinbox.helper.CustomFont
 import com.example.tifinbox.ui.theme.TifinBOXTheme
 import com.example.tifinbox.ui.theme.appGreen
 
@@ -35,7 +36,6 @@ class DashboardActivity: ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             TifinBOXTheme {
                 val navController = rememberNavController()
@@ -47,7 +47,9 @@ class DashboardActivity: ComponentActivity() {
                             title = {
                                 Text("TiffinBox",
                                     fontSize = 20.sp,
-                                    fontFamily = FontFamily.SansSerif)
+                                    fontFamily = CustomFont.customFontFamily,
+                                    fontWeight = FontWeight.Bold
+                                )
                             },
                             Modifier.shadow(9.dp, ambientColor = Color.Black)
                             ,
@@ -57,7 +59,7 @@ class DashboardActivity: ComponentActivity() {
                                         painter = painterResource(id = R.drawable.bell_icon),
                                         contentDescription = "notification",
                                         tint = appGreen,
-                                        modifier = Modifier.size(30.dp)
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 }
                             }
