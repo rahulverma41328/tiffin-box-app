@@ -113,7 +113,7 @@ class RegisterViewModel:ViewModel() {
                 try {
                     if (response.isSuccessful){
                         response.body()?.let {
-                            val user: UserData = response.body()!!
+                            val user: LoginResponse = response.body()!!
 
                             _login.value = Resource.Success(user)
                         }

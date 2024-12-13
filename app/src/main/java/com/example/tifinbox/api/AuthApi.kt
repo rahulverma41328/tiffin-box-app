@@ -17,6 +17,6 @@ interface AuthApi {
     @POST("/api/auth/verify")
     suspend fun verifyOTP(@Body otp:OtpRequest): Response<User>
 
-//    @POST("/api/auth/login")
-//    suspend fun loginUser(@Body credential:LoginUserModel):Response<UserData>
+    @POST("/api/auth/login")
+    suspend fun loginUser(@Body credential:LoginUserModel):Response<LoginResponse>
 }
