@@ -1,5 +1,6 @@
 package com.example.tiffinbox.auth
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
@@ -39,19 +41,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.tifinbox.R
-import com.example.tifinbox.auth.MainActivity
 import com.example.tifinbox.auth.viewModel.RegisterViewModel
+import com.example.tifinbox.helper.RegisterValidation
 import com.example.tifinbox.helper.ShowProgressBar
 import com.example.tifinbox.helper.StoreUserData
 import com.example.tifinbox.routes.AuthRoutes
 import com.example.tifinbox.ui.theme.appGreen
 import com.example.tifinbox.util.Resource
+import kotlin.math.log
 
 @Composable
-fun ScreenLogin(
-    navController: NavController,
-    registerViewModel: RegisterViewModel,
-    onNavigate:() -> Unit){
+fun ScreenLogin(navController: NavController,registerViewModel: RegisterViewModel,onNavigate:() -> Unit){
 
     Scaffold(modifier = Modifier) { padding ->
         Column(Modifier.padding(20.dp).fillMaxSize(),
@@ -70,9 +70,13 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
     var password by remember { mutableStateOf("") }
     val loginState by registerViewModel.login.collectAsState()
     var isLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
+<<<<<<< HEAD
     val context  = LocalContext.current
     val storeData = StoreUserData(context)
+=======
+>>>>>>> parent of 3a947fa (got jwt token and fine)
 
     OutlinedTextField(
         value = phone,
@@ -155,7 +159,23 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
         }
         is Resource.Success -> {
             isLoading = false
+<<<<<<< HEAD
 
+=======
+            val storeData = StoreUserData(context)
+            LaunchedEffect(Unit) {
+                if (storeData.hasData()){
+                    storeData.clearData()
+                }
+            }
+            val userData = loginState.data
+            if (userData != null) {
+               LaunchedEffect(Unit) {
+                //  userDao.insertUser(userData)
+               //    Log.e("stored",userDao.getUserById(2).toString())
+               }
+            }
+>>>>>>> parent of 3a947fa (got jwt token and fine)
             onNavigate()
             Toast.makeText(context,"Successfully loggedIn",Toast.LENGTH_SHORT).show()
         }

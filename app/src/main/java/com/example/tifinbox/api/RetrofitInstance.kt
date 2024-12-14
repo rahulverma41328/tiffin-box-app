@@ -1,8 +1,5 @@
 package com.example.tifinbox.api
 
-import android.content.Context
-import com.example.tifinbox.helper.StoreUserData
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -10,6 +7,7 @@ object RetrofitInstance {
 
     private val baseUrl = "https://tifin-backend.onrender.com"
 
+<<<<<<< HEAD
     private fun getInstance(storeUserData: StoreUserData) : Retrofit{
 
         val client = OkHttpClient.Builder()
@@ -21,6 +19,12 @@ object RetrofitInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
+=======
+    private fun getInstance() : Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create()).build()
+>>>>>>> parent of 3a947fa (got jwt token and fine)
     }
 
     fun createAuthApi(userData: StoreUserData): AuthApi{

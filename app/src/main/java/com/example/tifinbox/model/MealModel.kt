@@ -1,4 +1,4 @@
-package com.example.tifinbox.productsDetails.model
+package com.example.tifinbox.model
 
 data class MealModel(
     val id: String,

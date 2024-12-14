@@ -42,11 +42,11 @@ fun ScreenSplash(navController: NavController,onNavigate:() -> Unit){
         delay(2000)
         userData.userLogin.collect{isLogin ->
             if (isLogin){
-                Log.e("response",isLogin.toString())
                 onNavigate()
             }
             else navController.navigate(AuthRoutes.introductionScreen)
         }
+        navController.navigate(AuthRoutes.introductionScreen)
     }
     Scaffold(modifier = Modifier) { innerPadding ->
 

@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import okhttp3.Headers
 import java.lang.Exception
 
 class RegisterViewModel:ViewModel() {
@@ -45,9 +44,13 @@ class RegisterViewModel:ViewModel() {
 
     fun registerUser(name:String, phone:String, password:String,address:String,context: Context){
 
+<<<<<<< HEAD
         val user = User(id = 0,name = name, phone = phone, password = password, address =  address)
         val userData = StoreUserData(context)
         val authApi = RetrofitInstance.createAuthApi(userData)
+=======
+        val user = User(name,phone,password, address)
+>>>>>>> parent of 3a947fa (got jwt token and fine)
         if(checkValidation(name,phone,password,address)){
             viewModelScope.launch {
                 _register.value = Resource.Loading()
@@ -123,14 +126,17 @@ class RegisterViewModel:ViewModel() {
                 val response = authApi.loginUser(LoginUserModel(phone, password))
                 try {
                     if (response.isSuccessful){
+<<<<<<< HEAD
                         saveUserData(response.body(),storeUserData)
                         getCookies(response.headers(),storeUserData)
+=======
+>>>>>>> parent of 3a947fa (got jwt token and fine)
                         response.body()?.let {
                             val user: LoginResponse = response.body()!!
+
                             _login.value = Resource.Success(user)
                         }
-                    }
-                    else{
+                    }else{
                         _login.value = Resource.Error(response.message())
                     }
                 }catch (e: Exception){
@@ -140,6 +146,7 @@ class RegisterViewModel:ViewModel() {
         }
     }
 
+<<<<<<< HEAD
     private suspend fun saveUserData(body: LoginResponse?,storeUserData: StoreUserData) {
         if (body != null) {
             if (storeUserData.hasData()){
@@ -166,4 +173,6 @@ class RegisterViewModel:ViewModel() {
         }
     }
 
+=======
+>>>>>>> parent of 3a947fa (got jwt token and fine)
 }
