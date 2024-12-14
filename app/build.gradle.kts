@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
 }
 
 android {
@@ -86,5 +85,5 @@ dependencies {
     // Extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.7.5")
 
-    // room database
+
 }
