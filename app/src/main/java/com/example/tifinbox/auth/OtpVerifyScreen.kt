@@ -86,7 +86,7 @@ fun ScreenVerifyOtp(navController: NavController, registerViewModel: RegisterVie
             )
 
             Button(onClick = {
-                registerViewModel.verifyOTP(otp = otp,context)
+                registerViewModel.verifyOTP(otp = otp)
             },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(

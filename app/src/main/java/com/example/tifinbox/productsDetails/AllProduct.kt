@@ -4,22 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.tifinbox.helper.CustomFont
 import com.example.tifinbox.productsDetails.screen.AllProductScreen
@@ -35,12 +35,7 @@ class AllProduct : ComponentActivity() {
         val intent = Intent()
         val data = intent.getStringExtra("kitchen_all")
         val viewModel = ViewModelProvider(this)[ServiceProviderViewModel::class.java]
-<<<<<<< HEAD
-
-
-        viewModel.getAllSP(applicationContext)
-=======
->>>>>>> parent of 3a947fa (got jwt token and fine)
+        viewModel.getAllSP()
         setContent {
             TifinBOXTheme {
                 val navController = rememberNavController()
@@ -58,8 +53,9 @@ class AllProduct : ComponentActivity() {
                     modifier = Modifier
                 ){ innerPadding ->
 
-                    if (data != null) {
-                        AllProductScreen(innerPadding,data, viewModel = viewModel)
+                    Column {
+
+                        AllProductScreen(innerPadding, viewModel = viewModel)
                     }
                 }
             }

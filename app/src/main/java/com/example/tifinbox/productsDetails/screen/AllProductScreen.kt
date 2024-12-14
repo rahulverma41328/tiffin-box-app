@@ -14,7 +14,7 @@ import com.example.tifinbox.productsDetails.viewModel.ServiceProviderViewModel
 import com.example.tifinbox.util.Resource
 
 @Composable
-fun AllProductScreen(padding: PaddingValues, navigation:String,viewModel: ServiceProviderViewModel){
+fun AllProductScreen(padding: PaddingValues,viewModel: ServiceProviderViewModel){
 
     val allSP = viewModel.getAllSP.collectAsState()
     Column(

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tifinbox.api.RetrofitInstance
-import com.example.tifinbox.productsDetails.model.AllServiceProviderModel
+import com.example.tifinbox.model.AllServiceProviderModel
 import com.example.tifinbox.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
