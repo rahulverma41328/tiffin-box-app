@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import okhttp3.Headers
 import java.lang.Exception
 
 class RegisterViewModel:ViewModel() {
@@ -44,7 +43,7 @@ class RegisterViewModel:ViewModel() {
 
     fun registerUser(name:String, phone:String, password:String,address:String){
 
-        val user = User(id = 0,name = name, phone = phone, password = password, address =  address)
+        val user = User(name,phone,password, address)
         if(checkValidation(name,phone,password,address)){
             viewModelScope.launch {
                 _register.value = Resource.Loading()
@@ -113,13 +112,12 @@ class RegisterViewModel:ViewModel() {
                 val response = authApi.loginUser(LoginUserModel(phone, password))
                 try {
                     if (response.isSuccessful){
-                        getCookies(response.headers())
                         response.body()?.let {
                             val user: LoginResponse = response.body()!!
+
                             _login.value = Resource.Success(user)
                         }
-                    }
-                    else{
+                    }else{
                         _login.value = Resource.Error(response.message())
                     }
                 }catch (e: Exception){
@@ -127,22 +125,6 @@ class RegisterViewModel:ViewModel() {
                 }
             }
         }
-    }
-
-    private fun getCookies(headers: Headers) {
-        val cookies = headers["Set-Cookie"]
-        if (!cookies.isNullOrBlank()){
-            val accessToken = extractAccessToken(cookies)
-            if (!accessToken.isNullOrBlank()){
-
-            }
-        }
-    }
-
-    private fun extractAccessToken(cookies: String): String? {
-        val tokenRegex = "access_token=([^;]+)".toRegex()
-        val matchResult = tokenRegex.find(cookies)
-        return matchResult?.groupValues?.get(1) // Returns the token
     }
 
 }
