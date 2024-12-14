@@ -10,15 +10,26 @@ object RetrofitInstance {
 
     private val baseUrl = "https://tifin-backend.onrender.com"
 
-    private fun getInstance() : Retrofit{
+    private fun getInstance(storeUserData: StoreUserData) : Retrofit{
 
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(storeUserData)) // Add AuthInterceptor
+            .build()
 
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build()
     }
 
-    val authApi: AuthApi = getInstance().create(AuthApi::class.java)
-    val serviceProviderApi: ServiceProvider = getInstance().create(ServiceProvider::class.java)
+    fun createAuthApi(userData: StoreUserData): AuthApi{
+        return getInstance(userData).create(AuthApi::class.java)
+    }
+
+    fun createServiceProviderApi(userData: StoreUserData): ServiceProvider{
+        return getInstance(userData).create(ServiceProvider::class.java)
+    }
+
+
 }

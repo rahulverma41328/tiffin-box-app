@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.launchIn
 fun ScreenVerifyOtp(navController: NavController, registerViewModel: RegisterViewModel, onNavigate:() -> Unit){
 
     val checkOtp by registerViewModel.checkOtp.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(modifier = Modifier) { innerPadding ->
         Column(
@@ -85,7 +86,7 @@ fun ScreenVerifyOtp(navController: NavController, registerViewModel: RegisterVie
             )
 
             Button(onClick = {
-                registerViewModel.verifyOTP(otp = otp)
+                registerViewModel.verifyOTP(otp = otp,context)
             },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(

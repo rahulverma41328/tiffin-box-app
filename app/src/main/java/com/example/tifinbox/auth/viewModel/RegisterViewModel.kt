@@ -1,5 +1,6 @@
 package com.example.tifinbox.auth.viewModel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tifinbox.api.RetrofitInstance
 import com.example.tifinbox.helper.RegisterFieldState
 import com.example.tifinbox.helper.RegisterValidation
+import com.example.tifinbox.helper.StoreUserData
 import com.example.tifinbox.helper.validateAddress
 import com.example.tifinbox.helper.validateName
 import com.example.tifinbox.helper.validatePassword
@@ -28,7 +30,6 @@ import java.lang.Exception
 
 class RegisterViewModel:ViewModel() {
 
-    private val authApi = RetrofitInstance.authApi
 
     private val _register = MutableLiveData<Resource<User>>()
     val register : LiveData<Resource<User>> = _register
@@ -42,15 +43,18 @@ class RegisterViewModel:ViewModel() {
     private val _login = MutableStateFlow<Resource<LoginResponse>>(Resource.Unspecified())
     val login = _login
 
-    fun registerUser(name:String, phone:String, password:String,address:String){
+    fun registerUser(name:String, phone:String, password:String,address:String,context: Context){
 
         val user = User(id = 0,name = name, phone = phone, password = password, address =  address)
+        val userData = StoreUserData(context)
+        val authApi = RetrofitInstance.createAuthApi(userData)
         if(checkValidation(name,phone,password,address)){
             viewModelScope.launch {
                 _register.value = Resource.Loading()
                 try {
                     val response = authApi.createUser(user)
                     if (response.isSuccessful){
+
                         _register.value = Resource.Success(user)
                     }else{
                         _register.value = Resource.Error(response.message())
@@ -89,7 +93,9 @@ class RegisterViewModel:ViewModel() {
         return shouldRegister
     }
 
-    fun verifyOTP(otp:String){
+    fun verifyOTP(otp:String,context: Context){
+        val userData = StoreUserData(context)
+        val authApi = RetrofitInstance.createAuthApi(userData)
         viewModelScope.launch {
             if(otp.isNotEmpty()) {
                 val response = authApi.verifyOTP(OtpRequest(otp = otp))
@@ -106,14 +112,19 @@ class RegisterViewModel:ViewModel() {
         }
     }
 
-    fun loginUser(phone: String, password:String){
+    fun loginUser(phone: String, password:String, context: Context){
+
+         val storeUserData = StoreUserData(context)
+         val authApi = RetrofitInstance.createAuthApi(storeUserData)
+
         _login.value = Resource.Loading()
         viewModelScope.launch {
             if (phone.isNotEmpty() && password.isNotEmpty()){
                 val response = authApi.loginUser(LoginUserModel(phone, password))
                 try {
                     if (response.isSuccessful){
-                        getCookies(response.headers())
+                        saveUserData(response.body(),storeUserData)
+                        getCookies(response.headers(),storeUserData)
                         response.body()?.let {
                             val user: LoginResponse = response.body()!!
                             _login.value = Resource.Success(user)
@@ -129,20 +140,30 @@ class RegisterViewModel:ViewModel() {
         }
     }
 
-    private fun getCookies(headers: Headers) {
-        val cookies = headers["Set-Cookie"]
-        if (!cookies.isNullOrBlank()){
-            val accessToken = extractAccessToken(cookies)
-            if (!accessToken.isNullOrBlank()){
-
+    private suspend fun saveUserData(body: LoginResponse?,storeUserData: StoreUserData) {
+        if (body != null) {
+            if (storeUserData.hasData()){
+                storeUserData.clearData()
+                Log.e("has data","ture")
             }
+            else{
+                Log.e("has data", "false")
+                storeUserData.saveUserData(body.user.name,body.user.phone,body.user.address, isLogin = true)
+            }
+
         }
     }
 
-    private fun extractAccessToken(cookies: String): String? {
-        val tokenRegex = "access_token=([^;]+)".toRegex()
-        val matchResult = tokenRegex.find(cookies)
-        return matchResult?.groupValues?.get(1) // Returns the token
+
+    private suspend fun getCookies(headers: Headers,storeUserData: StoreUserData) {
+        val cookies = headers["Set-Cookie"]
+        if (!cookies.isNullOrBlank()){
+            Log.e("cookies",cookies)
+            storeUserData.saveJWTToken(token = cookies)
+        }
+        storeUserData.jwtToken.collect{
+            Log.e("jwt token ", it)
+        }
     }
 
 }

@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -96,6 +97,7 @@ fun MiddleLayout(navController: NavController,viewModel: RegisterViewModel) {
     var isLoading by remember { mutableStateOf(false) }
 
     val registerResult = viewModel.register.observeAsState()
+    val context = LocalContext.current
 
     // FocusRequesters for each TextField
     val phoneFocusRequester = remember { FocusRequester() }
@@ -232,7 +234,7 @@ fun MiddleLayout(navController: NavController,viewModel: RegisterViewModel) {
     )
 
     Button(onClick = {
-        viewModel.registerUser(name,"+91$phone",password, address)
+        viewModel.registerUser(name,"+91$phone",password, address, context)
     },
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(

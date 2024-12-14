@@ -1,5 +1,6 @@
 package com.example.tifinbox.api
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.example.tifinbox.helper.StoreUserData
 import kotlinx.coroutines.flow.first
@@ -13,6 +14,7 @@ class AuthInterceptor(private val dataStore: StoreUserData): Interceptor {
 
         runBlocking {
             token = dataStore.jwtToken.first()
+            Log.e("token interceptor",token.toString())
         }
 
         val request = chain.request().newBuilder()

@@ -72,6 +72,7 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
     var isLoading by remember { mutableStateOf(false) }
 
     val context  = LocalContext.current
+    val storeData = StoreUserData(context)
 
     OutlinedTextField(
         value = phone,
@@ -117,7 +118,7 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
     )
 
     Button(onClick = {
-        registerViewModel.loginUser("+91$phone",password)
+        registerViewModel.loginUser("+91$phone",password,context)
     },
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
@@ -154,20 +155,7 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
         }
         is Resource.Success -> {
             isLoading = false
-            val storeData = StoreUserData(context)
 
-            LaunchedEffect(Unit) {
-                if (storeData.hasData()){
-                    storeData.clearData()
-                }
-            }
-            val userData = loginState.data
-            if (userData != null) {
-               LaunchedEffect(Unit) {
-                   val user = userData.user
-                   storeData.saveUserData(user.name,user.phone,user.address,true)
-               }
-            }
             onNavigate()
             Toast.makeText(context,"Successfully loggedIn",Toast.LENGTH_SHORT).show()
         }
