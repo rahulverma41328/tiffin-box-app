@@ -234,7 +234,7 @@ fun MiddleLayout(navController: NavController,viewModel: RegisterViewModel) {
     )
 
     Button(onClick = {
-        viewModel.registerUser(name,"+91$phone",password, address, context)
+        viewModel.registerUser(name,"+91$phone",password, address)
     },
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
