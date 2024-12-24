@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import retrofit2.Response
 import java.lang.Exception
 
 class RegisterViewModel:ViewModel() {
@@ -38,8 +39,10 @@ class RegisterViewModel:ViewModel() {
     private val _checkOtp = MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
     val checkOtp = _checkOtp
 
-    private val _login = MutableStateFlow<Resource<LoginResponse>>(Resource.Unspecified())
+    private val _login = MutableStateFlow<Resource<Response<LoginResponse>>>(Resource.Unspecified())
     val login = _login
+
+
 
     fun registerUser(name:String, phone:String, password:String,address:String){
 
@@ -113,9 +116,8 @@ class RegisterViewModel:ViewModel() {
                 try {
                     if (response.isSuccessful){
                         response.body()?.let {
-                            val user: LoginResponse = response.body()!!
-
-                            _login.value = Resource.Success(user)
+                           // val user: LoginResponse = response.body()!!
+                            _login.value = Resource.Success(response)
                         }
                     }else{
                         _login.value = Resource.Error(response.message())

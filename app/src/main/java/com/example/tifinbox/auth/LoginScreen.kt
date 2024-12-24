@@ -163,8 +163,15 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
             val userData = loginState.data
             if (userData != null) {
                LaunchedEffect(Unit) {
-                //  userDao.insertUser(userData)
-               //    Log.e("stored",userDao.getUserById(2).toString())
+                   val cookie = loginState.data?.headers()?.get("Set-Cookie")
+                   val token = getToken(cookie)
+                   if (token != null) {
+                       storeData.saveToken(token)
+                   }
+                   val user = loginState.data?.body()?.user
+                   if (user != null) {
+                       storeData.saveUserData(user.name,user.phone,user.address,true)
+                   }
                }
             }
             onNavigate()
@@ -172,6 +179,10 @@ fun LoginMiddleLayout(navController: NavController,registerViewModel: RegisterVi
         }
         is Resource.Unspecified -> {}
     }
+}
+
+fun getToken(cookie: String?): String {
+    return cookie!!.substringBefore(";")
 }
 
 @Composable

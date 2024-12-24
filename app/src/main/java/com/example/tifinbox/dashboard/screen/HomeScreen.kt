@@ -233,14 +233,15 @@ fun PopularKitchen(context: Context) {
             }
         }
 
-        KitchenItems()
+
+        ServiceProvider()
 
 
     }
 }
 
 @Composable
-fun KitchenItems() {
+fun ServiceProvider() {
     val kitchenItems = listOf(
         listOf(
             R.drawable.kitchen_photo_demo,

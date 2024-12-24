@@ -12,10 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
 
 class StoreUserData(private val context: Context) {
-
-    private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
 
     private val dataStore = context.userDataStore
 
@@ -25,6 +24,7 @@ class StoreUserData(private val context: Context) {
         val PHONE = stringPreferencesKey("user_address")
         val ADDRESS = stringPreferencesKey("user_address")
         val ISLOGINED = booleanPreferencesKey("user_login")
+        val JWT_TOKEN = stringPreferencesKey("jwt_token")
     }
 
     suspend fun saveUserData(name:String,phone:String,address:String,isLogin:Boolean){
@@ -36,6 +36,11 @@ class StoreUserData(private val context: Context) {
          }
     }
 
+    suspend fun saveToken(jwtToken: String){
+        dataStore.edit {preferences ->
+            preferences[JWT_TOKEN] = jwtToken
+        }
+    }
     suspend fun hasData(): Boolean{
         val preferences = dataStore.data.first()
         return preferences.asMap().isNotEmpty()
@@ -59,4 +64,8 @@ class StoreUserData(private val context: Context) {
 
     val userLogin: Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[ISLOGINED] ?: false}
+
+    val jwtToken: Flow<String> = dataStore.data.map {
+        preferences -> preferences[JWT_TOKEN]?: ""
+    }
 }

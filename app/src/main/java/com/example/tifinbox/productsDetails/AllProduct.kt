@@ -2,12 +2,14 @@ package com.example.tifinbox.productsDetails
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -17,11 +19,17 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.tifinbox.helper.CustomFont
+import com.example.tifinbox.helper.StoreUserData
 import com.example.tifinbox.productsDetails.screen.AllProductScreen
 import com.example.tifinbox.productsDetails.viewModel.ServiceProviderViewModel
 import com.example.tifinbox.ui.theme.TifinBOXTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class AllProduct : ComponentActivity() {
 
@@ -29,9 +37,17 @@ class AllProduct : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dataStore = StoreUserData(applicationContext)
+
         val intent = Intent()
         val data = intent.getStringExtra("kitchen_all")
         val viewModel = ViewModelProvider(this)[ServiceProviderViewModel::class.java]
+        lifecycleScope.launch {
+            val cookie = dataStore.jwtToken.first()
+            Log.e("cookie",cookie)
+            viewModel.getAllSP(cookie)
+        }
+
         setContent {
             TifinBOXTheme {
                 val navController = rememberNavController()
