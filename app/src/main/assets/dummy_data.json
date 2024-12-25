@@ -1,0 +1,60 @@
+{
+  "success": true,
+  "sp": [
+    {
+      "id": 1,
+      "name": "Rahul",
+      "phone": "+918791701281",
+      "password": "$2b$10$4lB3Lhg.A6jkuokSwsJcSOVblNrzMVFDr9CuzKK4hXsNyrW1yDqc.",
+      "address": null,
+      "orderQuantity": 10,
+      "role": "SP",
+      "meal": [
+        {
+          "id": 1,
+          "day": "SUNDAY",
+          "mealType": "LUNCH",
+          "sabji": "aalu ki sabji",
+          "roti": 5,
+          "rice": "han he he",
+          "salad": false,
+          "raita": true,
+          "description": "this is description",
+          "rating": 5,
+          "noOfReviews": 1,
+          "price": 50,
+          "createdAt": "2024-12-11T12:34:56.000Z",
+          "userId": 1
+        },
+        {
+          "id": 2,
+          "day": "MONDAY",
+          "mealType": "LUNCH",
+          "sabji": "ghobhi ki sabji",
+          "roti": 4,
+          "rice": "han he",
+          "salad": false,
+          "raita": false,
+          "description": null,
+          "rating": 0,
+          "noOfReviews": 1,
+          "price": 50,
+          "createdAt": "2024-12-11T12:34:56.000Z",
+          "userId": 1
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "id": 3,
+      "name": "Prabhat",
+      "phone": "+917900482042",
+      "password": "$2b$10$x/9vFLpguFyjRclY3eOVzexFR918yX/rwTNbZOFPZXvO7JDb/hbne",
+      "address": null,
+      "orderQuantity": 0,
+      "role": "SP",
+      "meal": [],
+      "reviews": []
+    }
+  ]
+}

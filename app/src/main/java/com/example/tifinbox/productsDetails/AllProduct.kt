@@ -38,19 +38,10 @@ class AllProduct : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val dataStore = StoreUserData(applicationContext)
-
-        val intent = Intent()
-        val data = intent.getStringExtra("kitchen_all")
         val viewModel = ViewModelProvider(this)[ServiceProviderViewModel::class.java]
-        lifecycleScope.launch {
-            val cookie = dataStore.jwtToken.first()
-            Log.e("cookie",cookie)
-            viewModel.getAllSP(cookie)
-        }
 
         setContent {
             TifinBOXTheme {
-                val navController = rememberNavController()
                 Scaffold(
                    topBar = {
                        TopAppBar(
@@ -64,10 +55,7 @@ class AllProduct : ComponentActivity() {
                    },
                     modifier = Modifier
                 ){ innerPadding ->
-
-                    if (data != null) {
-                        AllProductScreen(innerPadding,data, viewModel = viewModel)
-                    }
+                        AllProductScreen(innerPadding, spViewModel = viewModel,dataStore)
                 }
             }
         }
