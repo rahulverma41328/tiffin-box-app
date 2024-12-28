@@ -1,43 +1,45 @@
 package com.example.tifinbox.productsDetails.viewModel
 
-import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tifinbox.api.ServiceProvider
+import com.example.tifinbox.api.RetrofitInstance
 import com.example.tifinbox.productsDetails.model.AllServiceProviderModel
 import com.example.tifinbox.productsDetails.model.MealModel
 import com.example.tifinbox.productsDetails.model.ServiceProviderModel
 import com.example.tifinbox.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ServiceProviderViewModel: ViewModel() {
 
 
     private val _getAllSP = MutableStateFlow<Resource<AllServiceProviderModel>>(Resource.Unspecified())
-    val getAllSP = _getAllSP
+    val getAllSP = _getAllSP.asStateFlow()
+
 
     fun getAllSP(cookie:String){
-        _getAllSP.value = Resource.Loading()
         viewModelScope.launch {
-           _getAllSP.value =  Resource.Loading()
-//            val cookieLast = cookie.trim()
-//            Log.e("cookie system",cookieLast)
-//            val response = RetrofitInstance.serviceProviderApi.getAllServiceProvider(cookieLast)
-//            Log.e("response",response.toString())
-//            try {
-//                if (response.isSuccessful){
-//                    _getAllSP.value = Resource.Success(response.body()!!)
-//                    Log.e("response", response.body().toString())
-//                }else{
-//                    _getAllSP.value = Resource.Error(response.message())
-//                    Log.e("error",response.message())
-//                }
-//            }catch (e : Exception){
-//                _getAllSP.value = Resource.Error(response.message())
-//            }
+            if (_getAllSP.value !is Resource.Success){
+                _getAllSP.value =  Resource.Loading()
+                val cookieLast = cookie.trim()
+                Log.e("cookie system",cookieLast)
+                val response = RetrofitInstance.serviceProviderApi.getAllServiceProvider(cookieLast)
+                Log.e("response",response.toString())
+                try {
+                    if (response.isSuccessful){
+                        _getAllSP.value = Resource.Success(response.body()!!)
+                        Log.e("response", response.body().toString())
+                    }else{
+                        _getAllSP.value = Resource.Error(response.message())
+                        Log.e("error",response.message())
+                    }
+                }catch (e : Exception){
+                    _getAllSP.value = Resource.Error(response.message())
+                }
+            }
 
-            _getAllSP.value = Resource.Success(dummyData())
         }
     }
 

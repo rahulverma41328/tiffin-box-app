@@ -23,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,21 +39,28 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tifinbox.R
 import com.example.tifinbox.helper.CustomFont
 import com.example.tifinbox.helper.RatingBar
 import com.example.tifinbox.helper.StoreUserData
+import com.example.tifinbox.navGraph.SPDetailGraph
 import com.example.tifinbox.productsDetails.model.AllServiceProviderModel
 import com.example.tifinbox.productsDetails.model.ServiceProviderModel
 import com.example.tifinbox.productsDetails.viewModel.ServiceProviderViewModel
+import com.example.tifinbox.routes.ProductDetailRoutes
 import com.example.tifinbox.ui.theme.appGreen
 import com.example.tifinbox.util.Resource
 import kotlinx.coroutines.flow.first
 
-@Composable
-fun AllProductScreen(padding: PaddingValues,spViewModel: ServiceProviderViewModel,userData: StoreUserData){
 
+@Composable
+fun AllProductScreen(padding: PaddingValues,spViewModel: ServiceProviderViewModel,userData: StoreUserData,navController: NavHostController){
+
+    val allSP = spViewModel.getAllSP.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,14 +71,12 @@ fun AllProductScreen(padding: PaddingValues,spViewModel: ServiceProviderViewMode
             spViewModel.getAllSP(cookie = cookie)
         }
 
-        ShowAllServiceProvider(spViewModel = spViewModel)
+        ShowAllServiceProvider(spViewModel = spViewModel,navController,allSP)
     }
 }
 
 @Composable
-fun ShowAllServiceProvider(spViewModel: ServiceProviderViewModel) {
-    val allSP = spViewModel.getAllSP.collectAsState()
-
+fun ShowAllServiceProvider(spViewModel: ServiceProviderViewModel,navController:NavHostController,allSP: State<Resource<AllServiceProviderModel>>) {
     when(val resource = allSP.value){
         is Resource.Error -> {
             Toast.makeText(LocalContext.current,"unable to load data",Toast.LENGTH_SHORT).show()
@@ -89,7 +95,7 @@ fun ShowAllServiceProvider(spViewModel: ServiceProviderViewModel) {
         is Resource.Success -> {
             Log.e("resource", "data fetched")
             resource.data?.let { allServiceProviderModel ->
-                ServiceProviderList(allServiceProviderModel.sp)
+                ServiceProviderList(allServiceProviderModel.sp,navController)
             }?: run {
                 Text(
                     text = "No service providers found.",
@@ -106,7 +112,7 @@ fun ShowAllServiceProvider(spViewModel: ServiceProviderViewModel) {
 }
 
 @Composable
-fun ServiceProviderList(serviceProviders: List<ServiceProviderModel>) {
+fun ServiceProviderList(serviceProviders: List<ServiceProviderModel>,navController: NavHostController) {
 
 
     LazyColumn(modifier = Modifier
@@ -115,23 +121,27 @@ fun ServiceProviderList(serviceProviders: List<ServiceProviderModel>) {
         verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
         items(serviceProviders.size){ serviceProvider ->
-            ServiceProviderCard(serviceProviders,serviceProvider)
+            ServiceProviderCard(serviceProviders,serviceProvider,navController)
         }
     }
 }
 
 @Composable
-fun ServiceProviderCard(serviceProvider: List<ServiceProviderModel>,position:Int) {
+fun ServiceProviderCard(serviceProvider: List<ServiceProviderModel>,position:Int,navController: NavHostController) {
 
     Card (
         modifier = Modifier
+            .clickable {
+                navController.navigate("${ProductDetailRoutes.spDetails}/$position")
+            }
             .fillMaxWidth()
             .height(140.dp),
         colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(2.dp)
     ){
         Row(modifier = Modifier.fillMaxHeight()) {
-            Image(modifier = Modifier.width(120.dp)
+            Image(modifier = Modifier
+                .width(120.dp)
                 .fillMaxHeight(),
                 painter = painterResource(R.drawable.kitchen_photo_demo),
                 contentDescription = "",
@@ -165,7 +175,7 @@ fun ServiceProviderCard(serviceProvider: List<ServiceProviderModel>,position:Int
                     fontSize = 12.sp)
 
                 Text(
-                    text = serviceProvider[position].address!!,
+                    text = serviceProvider[position].address.toString(),
                     fontFamily = CustomFont.customFontFamily,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black,

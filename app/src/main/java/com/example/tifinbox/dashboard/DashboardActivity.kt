@@ -23,12 +23,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.example.tifinbox.R
 import com.example.tifinbox.dashboard.bottomnav.BottomBar
 import com.example.tifinbox.dashboard.bottomnav.BottomNavGraph
 import com.example.tifinbox.dashboard.screen.ScreenHome
 import com.example.tifinbox.helper.CustomFont
+import com.example.tifinbox.productsDetails.viewModel.ServiceProviderViewModel
 import com.example.tifinbox.ui.theme.TifinBOXTheme
 import com.example.tifinbox.ui.theme.appGreen
 
@@ -39,6 +41,7 @@ class DashboardActivity: ComponentActivity() {
         setContent {
             TifinBOXTheme {
                 val navController = rememberNavController()
+                val viewModel = ViewModelProvider(this)[ServiceProviderViewModel::class.java]
                 Scaffold(
                     bottomBar = { BottomBar(navController = navController) },
                     modifier = Modifier,
@@ -67,7 +70,7 @@ class DashboardActivity: ComponentActivity() {
                     }) { innerPadding ->
 
                     Row(modifier = Modifier.padding(innerPadding)) {
-                        BottomNavGraph(navController)
+                        BottomNavGraph(navController, viewModel = viewModel)
                     }
                 }
             }

@@ -8,14 +8,15 @@ import com.example.tifinbox.dashboard.screen.ScreenCart
 import com.example.tifinbox.dashboard.screen.ScreenHome
 import com.example.tifinbox.dashboard.screen.ScreenProfile
 import com.example.tifinbox.dashboard.screen.ScreenSearch
+import com.example.tifinbox.productsDetails.viewModel.ServiceProviderViewModel
 
 @Composable
 fun BottomNavGraph(
-    nvaController: NavHostController){
+    nvaController: NavHostController,viewModel:ServiceProviderViewModel){
 
     NavHost(navController = nvaController, startDestination = BottomBarScreen.Home.routes){
         composable(route = BottomBarScreen.Home.routes) {
-            ScreenHome()
+            ScreenHome(viewModel)
         }
         composable(route = BottomBarScreen.Cart.routes) {
             ScreenCart()

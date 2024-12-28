@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.tifinbox.helper.CustomFont
 import com.example.tifinbox.helper.StoreUserData
+import com.example.tifinbox.navGraph.SPDetailGraph
 import com.example.tifinbox.productsDetails.screen.AllProductScreen
 import com.example.tifinbox.productsDetails.viewModel.ServiceProviderViewModel
 import com.example.tifinbox.ui.theme.TifinBOXTheme
@@ -55,7 +56,8 @@ class AllProduct : ComponentActivity() {
                    },
                     modifier = Modifier
                 ){ innerPadding ->
-                        AllProductScreen(innerPadding, spViewModel = viewModel,dataStore)
+                        //AllProductScreen(innerPadding, spViewModel = viewModel,dataStore)
+                    SPDetailGraph(innerPadding,viewModel,dataStore)
                 }
             }
         }

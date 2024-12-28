@@ -1,6 +1,6 @@
 package com.example.tifinbox.routes
 
 object ProductDetailRoutes {
-    var allProductDetailsRoute = "all_product_details"
-    var productDetails = "product_details"
+    var allSP = "all_sp"
+    var spDetails = "sp_details"
 }
